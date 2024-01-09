@@ -1,0 +1,19 @@
+{
+  "Type": "*fyne.Container",
+  "Layout": "Stack",
+  "Name": "cont",
+  "Objects": [
+    {
+      "Type": "*widget.List",
+      "Name": "contactList",
+      "Struct": {
+        "Hidden": false
+      }
+    }
+  ],
+  "Properties": {
+    "dir": "vertical",
+    "layout": "Max",
+    "name": "cont"
+  }
+}

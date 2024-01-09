@@ -8,9 +8,58 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+
+	"fyne.io/fyne/v2/app"
 )
 
+var myList []Contact
+
 func main() {
+	a := app.New()
+	w := a.NewWindow("Contact")
+
+	var err error
+	myList, err = loadContacts("Contacts")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	g := newGUI()
+	w.SetContent(g.makeUI())
+	w.ShowAndRun()
+}
+
+type Contact struct {
+	Name  string
+	Email string
+}
+
+func loadContacts(contactDirPath string) ([]Contact, error) {
+	entries, err := os.ReadDir(contactDirPath)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	var contacts []Contact
+	for _, e := range entries {
+		b, err := os.ReadFile(filepath.Join(contactDirPath, e.Name()))
+		if err != nil {
+			return contacts, err
+		}
+
+		ss := strings.Split(string(b), "\n")
+		c := Contact{
+			Name:  ss[0],
+			Email: ss[1],
+		}
+
+		contacts = append(contacts, c)
+	}
+
+	return contacts, nil
+}
+
+func contactTerm() {
 	fmt.Println("Hello Dadz")
 	fmt.Println("Who do you wanna add?")
 
@@ -48,28 +97,5 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	entries, err := os.ReadDir("Contacts")
-	if err != nil {
-		log.Fatal(err)
-	}
 
-	for i, e := range entries {
-		b, err := os.ReadFile(filepath.Join("Contacts", e.Name()))
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		ss := strings.Split(string(b), "\n")
-		c := Contact{
-			Name:  ss[0],
-			Email: ss[1],
-		}
-
-		fmt.Println(i, c.Name, c.Email)
-	}
-}
-
-type Contact struct {
-	Name  string
-	Email string
 }
